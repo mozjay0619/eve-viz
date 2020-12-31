@@ -9,7 +9,7 @@ with open("README.rst", "r") as fh:
     long_description = fh.read()
 
 setup(
-	name="Eve", 
+	name="eve-viz", 
 	version=VERSION,
 	author="Jay Kim",
 	description="Parallism made easy (and safe) with futures API",
