@@ -12,10 +12,10 @@ setup(
 	name="eve-viz", 
 	version=VERSION,
 	author="Jay Kim",
-	description="Parallism made easy (and safe) with futures API",
+	description="An easy to use tool for parallel model evaluation tasks, with native support for the random search algorithm.",
 	long_description=long_description,
 	long_description_content_type="text/x-rst",
-	url="https://github.com/mozjay0619/Eve",
+	url="https://github.com/mozjay0619/eve-viz",
 	license="DSB 3-clause",
 	packages=find_packages(),
 	#install_requires=["numpy>=1.18.2", "pandas>=0.25.3", "psutil>=5.7.0"]
