@@ -4,4 +4,5 @@ psutil>=5.7.0
 
 hierarchical-memmap-format
 ezFutures
+scikit-learn
 
