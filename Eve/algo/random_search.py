@@ -361,16 +361,42 @@ class RandomSearch():
         f, dirpath = self.get_f()
         cv = self.get_cv()
         p, logunif_keys = self.get_p()
-        
-        for search_idx, parameters in enumerate(p):
 
-            parameters = {k: (self._scale_logunif(v, logunif_keys[k][0], logunif_keys[k][1]) 
-                if k in logunif_keys else v) for k, v in parameters.items()}
+        parameters_record = []
 
-            for fold_idx in range(cv.get_n_splits(self.data, self.orderby)):
+        for group_idx, group_name in enumerate(f.get_sorted_group_names()):
 
-                return RandomSearch.fetch_fold_data(
-                    cv, f, search_idx, fold_idx, parameters, self.cv_method)
+            if f.get_node_attr('/', key='has_orderby'):
+
+                if f.has_groups():
+
+                    orderby_data = f.get_dataframe('/{}/{}'.format(group_name, EVE_ORDERBY_ENCODED_NAME))
+                    orderby_data[EVE_ORDERBY_ENCODED_NAME] = pd.to_datetime(orderby_data[EVE_ORDERBY_ENCODED_NAME])
+
+                else:
+
+                    orderby_data = f.get_dataframe('/{}'.format(EVE_ORDERBY_ENCODED_NAME))
+                    orderby_data[EVE_ORDERBY_ENCODED_NAME] = pd.to_datetime(orderby_data[EVE_ORDERBY_ENCODED_NAME])
+
+                split_cnt = cv.get_n_splits(orderby_data, EVE_ORDERBY_ENCODED_NAME)
+
+            else:
+
+                group_size = f.get_group_items()[group_name]
+                split_cnt = cv.get_n_splits(np.arange(group_size))
+
+
+            for search_idx, parameters in enumerate(p):
+
+                parameters = {k: (self._scale_logunif(v, logunif_keys[k][0], logunif_keys[k][1]) 
+                    if k in logunif_keys else v) for k, v in parameters.items()}
+
+                parameters_record.append((group_name, search_idx, parameters))
+
+                for fold_idx in range(split_cnt):
+
+                    return RandomSearch.fetch_fold_data(
+                        cv, f, search_idx, fold_idx, parameters, self.cv_method, group_name)
         
     def run(self, debug_mode=False):
         
