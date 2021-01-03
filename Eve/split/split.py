@@ -17,6 +17,11 @@ class Split():
             
             self.cv = KFold(n_splits=n_splits, 
                             shuffle=False)
+
+        elif cv_method=='ShuffledKFold':
+            
+            self.cv = KFold(n_splits=n_splits, 
+                            shuffle=True)
             
         elif cv_method=='SlidingWindow':
             
