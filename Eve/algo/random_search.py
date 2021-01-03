@@ -395,6 +395,14 @@ class RandomSearch():
                     orderby_data = f.get_dataframe('/{}'.format(EVE_ORDERBY_ENCODED_NAME))
                     orderby_data[EVE_ORDERBY_ENCODED_NAME] = pd.to_datetime(orderby_data[EVE_ORDERBY_ENCODED_NAME])
 
+                split_cnt = cv.get_n_splits(orderby_data, EVE_ORDERBY_ENCODED_NAME)
+
+            else:
+
+                group_size = f.get_group_items()[group_name]
+                split_cnt = cv.get_n_splits(np.arange(group_size))
+
+
             for search_idx, parameters in enumerate(p):
 
                 parameters = {k: (self._scale_logunif(v, logunif_keys[k][0], logunif_keys[k][1]) 
@@ -402,7 +410,7 @@ class RandomSearch():
 
                 parameters_record.append((group_name, search_idx, parameters))
 
-                for fold_idx in range(cv.get_n_splits(orderby_data, EVE_ORDERBY_ENCODED_NAME)):
+                for fold_idx in range(split_cnt):
 
                     if debug_mode:
 
