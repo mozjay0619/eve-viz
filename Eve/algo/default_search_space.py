@@ -54,3 +54,25 @@ tiny_xgboost_regressor_search_space_str = \
 default_search_space_dict['tiny_xgboost_regressor'] = [tiny_xgboost_regressor_search_space, tiny_xgboost_regressor_search_space_str]
 
 
+sklearn_random_forest_regressor_search_space = {'n_estimators': [(50, 950), 'discrete'],
+						                        'max_depth': [(2, 20), 'discrete'],
+						                        'min_samples_split': [(2, 50), 'discrete'],
+						                        'min_samples_leaf': [(1, 50), 'discrete'],
+						                        'max_features': [('auto', 'sqrt', 'log2'), 'choice'],
+						                        'bootstrap': [(True, False), 'choice']}
+
+sklearn_random_forest_regressor_search_space_str = \
+"""
+{'n_estimators': [(50, 950), 'discrete'],
+ 'max_depth': [(2, 20), 'discrete'],
+ 'min_samples_split': [(2, 50), 'discrete'],
+ 'min_samples_leaf': [(1, 50), 'discrete'],
+ 'max_features': [('auto', 'sqrt', 'log2'), 'choice'],
+ 'bootstrap': [(True, False), 'choice']}"""
+
+default_search_space_dict['sklearn_random_forest_regressor'] = [sklearn_random_forest_regressor_search_space, sklearn_random_forest_regressor_search_space_str]
+
+
+
+
+

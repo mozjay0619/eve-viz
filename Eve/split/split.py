@@ -149,3 +149,5 @@ class Split():
                 ax.legend(handles[1:], ["train", "validation"], loc='center left', bbox_to_anchor=(1.0, 0.5));
 
         return True
+
+        
