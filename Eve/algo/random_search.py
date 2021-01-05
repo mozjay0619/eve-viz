@@ -120,11 +120,23 @@ class RandomSearch():
 
         try:
 
+            if self.groupby is not None:
+
+                data = self.data[self.data[self.groupby]==self.data[self.groupby].iloc[0]]
+
+            else:
+
+                data = self.data
+
+            sample_data = self.data[[self.orderby]]
+            sample_data = sample_data.sort_values(by=self.orderby)
+            sample_data = sample_data.reset_index(drop=True)
+
             cv = self.get_cv()
-            cv.show_layout(self.data, self.orderby)
+            cv.show_layout(sample_data, self.orderby)
 
             print("Passed!")
-            cv.show_layout(self.data, self.orderby, True)
+            cv.show_layout(sample_data, self.orderby, True)
 
         except:
 
