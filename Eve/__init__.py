@@ -1,4 +1,4 @@
-__version__ = "0.0.b9"
+__version__ = "0.0.b11"
 
 
 from .algo import RandomSearch 

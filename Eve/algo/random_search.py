@@ -283,7 +283,7 @@ class RandomSearch():
         
         return group_name, search_idx, result
     
-    def get_f(self):
+    def get_f(self, show_progress):
 
         if not isinstance(self.feature_names, list):
             self.feature_names = [self.feature_names]
@@ -304,7 +304,7 @@ class RandomSearch():
             f.set_node_attr('/', key='has_orderby', value=False)
             
         print('Writing numpy memmap...')
-        f.close()
+        f.close(show_progress=show_progress)
             
         return f, dirpath
     
@@ -365,7 +365,7 @@ class RandomSearch():
         
         n_procs = self.n_procs
         
-        ez = ezFutures(n_procs=n_procs, show_progress=True, n_retries=2)
+        ez = ezFutures(n_procs=n_procs, n_retries=2)
         return ez
     
     def sample_fold(self):
@@ -410,9 +410,9 @@ class RandomSearch():
                     return RandomSearch.fetch_fold_data(
                         cv, f, search_idx, fold_idx, parameters, self.cv_method, group_name)
         
-    def run(self, debug_mode=False):
+    def run(self, debug_mode=False, show_progress=True):
         
-        f, dirpath = self.get_f()
+        f, dirpath = self.get_f(show_progress)
         cv = self.get_cv()
         p, logunif_keys = self.get_p()
         self.ez = self.get_ez()
@@ -463,7 +463,7 @@ class RandomSearch():
                                                     self.cv_method, group_name)
         
         print('Running search algorithm...')
-        results = self.ez.results()
+        results = self.ez.results(show_progress=show_progress)
 
         result_pdf = pd.DataFrame(data=results, columns=['group_name', 'search_idx', 'score'])
         result_pdf = result_pdf.groupby(['group_name', 'search_idx'])['score'].mean().reset_index()
