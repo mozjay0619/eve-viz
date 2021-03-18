@@ -368,9 +368,9 @@ class RandomSearch():
         ez = ezFutures(n_procs=n_procs, n_retries=2)
         return ez
     
-    def sample_fold(self):
+    def sample_fold(self, show_progress=False):
         
-        f, dirpath = self.get_f()
+        f, dirpath = self.get_f(show_progress)
         cv = self.get_cv()
         p, logunif_keys = self.get_p()
 
