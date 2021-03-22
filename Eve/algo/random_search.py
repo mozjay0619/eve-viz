@@ -8,6 +8,7 @@ from scipy.stats.distributions import uniform
 from ..split import Split
 from .default_search_space import default_search_space_dict
 from .default_eval_method import default_eval_method_dict
+from .utils import dict_depth
 
 import numpy as np
 import pandas as pd
@@ -128,15 +129,21 @@ class RandomSearch():
 
                 data = self.data
 
-            sample_data = self.data[[self.orderby]]
-            sample_data = sample_data.sort_values(by=self.orderby)
-            sample_data = sample_data.reset_index(drop=True)
+            if self.orderby is not None:
 
-            cv = self.get_cv()
-            cv.show_layout(sample_data, self.orderby)
+                sample_data = self.data[[self.orderby]]
+                sample_data = sample_data.sort_values(by=self.orderby)
+                sample_data = sample_data.reset_index(drop=True)
 
-            print("Passed!")
-            cv.show_layout(sample_data, self.orderby, True)
+                cv = self.get_cv()
+                cv.show_layout(sample_data, self.orderby)
+
+                print("Passed!")
+                cv.show_layout(sample_data, self.orderby, True)
+
+            else:
+
+                print("Passed!")
 
         except:
 
@@ -197,6 +204,13 @@ class RandomSearch():
 
             return
 
+        # input validating
+        if dict_depth(self.search_space)==2 and self.groupby is None:
+
+            print("Failed!")
+            print('\n\u2757For nested dict search_space input, groupby parameter must be specified')
+
+            return
 
         missing_args = self.missing_required_arguments(SEARCH_REQ2)
 
@@ -316,11 +330,16 @@ class RandomSearch():
         
         return cv
     
-    def get_p(self):
+    def get_p(self, group_key=None):
+
+        if dict_depth(self.search_space)==1:
+            temp_dict = self.search_space
+        elif dict_depth(self.search_space)==2:
+            temp_dict = self.search_space[group_key]
 
         temp_placeholder = dict()
 
-        for k, v in self.search_space.items():
+        for k, v in temp_dict.items():
             
             if len(v)==2:
                 
@@ -351,7 +370,7 @@ class RandomSearch():
                 param_sampler_input[k] = np.arange(val_tuple[0], val_tuple[1]+1)
                 
         p = ParameterSampler(param_sampler_input, n_iter=self.n_iters)
-        logunif_keys = {k: v[0] for k, v in self.search_space.items() if v[-1]=='loguniform'}
+        logunif_keys = {k: v[0] for k, v in temp_dict.items() if v[-1]=='loguniform'}
         
         return p, logunif_keys
 
@@ -372,7 +391,6 @@ class RandomSearch():
         
         f, dirpath = self.get_f(show_progress)
         cv = self.get_cv()
-        p, logunif_keys = self.get_p()
 
         parameters_record = []
 
@@ -397,6 +415,7 @@ class RandomSearch():
                 group_size = f.get_group_items()[group_name]
                 split_cnt = cv.get_n_splits(np.arange(group_size))
 
+            p, logunif_keys = self.get_p(group_name)
 
             for search_idx, parameters in enumerate(p):
 
@@ -414,7 +433,6 @@ class RandomSearch():
         
         f, dirpath = self.get_f(show_progress)
         cv = self.get_cv()
-        p, logunif_keys = self.get_p()
         self.ez = self.get_ez()
 
         parameters_record = []
@@ -440,6 +458,7 @@ class RandomSearch():
                 group_size = f.get_group_items()[group_name]
                 split_cnt = cv.get_n_splits(np.arange(group_size))
 
+            p, logunif_keys = self.get_p(group_name)
 
             for search_idx, parameters in enumerate(p):
 
