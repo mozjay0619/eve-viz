@@ -319,6 +319,9 @@ class RandomSearch():
             
         print('Writing numpy memmap...')
         f.close(show_progress=show_progress)
+
+        self.f = f
+        self.dirpath = dirpath
             
         return f, dirpath
     
@@ -499,11 +502,19 @@ class RandomSearch():
 
             best_params = pd.DataFrame(final_result_pdf.groupby('group_name').apply(get_best_params), 
                 columns=['best_params']).to_dict()['best_params']
+
+            self.best_params = best_params
+            self.final_result_pdf = final_result_pdf
+
             return best_params, final_result_pdf
     
         else:
 
             best_params = final_result_pdf[final_result_pdf['score']==final_result_pdf['score'].min()]['parameters'].values[0]
+
+            self.best_params = best_params
+            self.final_result_pdf = final_result_pdf
+            
             return best_params, final_result_pdf[['search_idx', 'score', 'parameters']]
 
     def errors(self):
