@@ -29,7 +29,7 @@ OrderedKFold_REQ_ARGS = ['orderby', 'n_splits']
 SEARCH_REQ1 = ['search_space', 'n_iters']
 SEARCH_REQ2 = ['eval_user_method']
 
-OPTIONAL = ['groupby', 'n_procs', 'random_state']
+OPTIONAL = ['groupby', 'n_procs', 'random_state', 'dirpath']
 
 LOGUNIF_SCALE_PARAM = 0.0325
 
@@ -39,7 +39,7 @@ class RandomSearch():
     def __init__(self, cv_method=None, data=None, feature_names=None, target_name=None, orderby=None, groupby=None, 
                  n_splits=None, min_train_size=None, train_size=None, valid_size=None, step_size=None, 
                  random_state=None, n_procs=None, n_iters=None, search_space=None,
-                 eval_user_method=None):
+                 eval_user_method=None, dirpath=None):
         
         self.cv_method = cv_method
         self.data = data
@@ -57,6 +57,7 @@ class RandomSearch():
         self.n_iters = n_iters
         self.search_space = search_space
         self.eval_user_method = eval_user_method
+        self.dirpath = dirpath
 
         if self.orderby:
             self.data[EVE_ORDERBY_ENCODED_NAME] = self.data[self.orderby].astype(int)
@@ -297,7 +298,7 @@ class RandomSearch():
         
         return group_name, search_idx, result
     
-    def get_f(self, show_progress):
+    def get_f(self, dirpath=None, show_progress=None):
 
         if not isinstance(self.feature_names, list):
             self.feature_names = [self.feature_names]
@@ -305,7 +306,9 @@ class RandomSearch():
         if not isinstance(self.target_name, list):
             self.target_name = [self.target_name]
         
-        dirpath = os.path.join(os.getcwd(), '__HMF__specialTmpDir')
+        if dirpath is None:
+            dirpath = os.path.join(os.getcwd(), '__HMF__specialTmpDir')
+
         f = HMF.open_file(dirpath, mode='w+')
         f.from_pandas(self.data, orderby=self.orderby, groupby=self.groupby)
         f.register_dataframe('X', self.feature_names)
@@ -392,7 +395,7 @@ class RandomSearch():
     
     def sample_fold(self, show_progress=False):
         
-        f, dirpath = self.get_f(show_progress)
+        f, dirpath = self.get_f(self.dirpath, show_progress)
         cv = self.get_cv()
 
         parameters_record = []
@@ -434,7 +437,7 @@ class RandomSearch():
         
     def run(self, debug_mode=False, show_progress=True):
         
-        f, dirpath = self.get_f(show_progress)
+        f, dirpath = self.get_f(self.dirpath, show_progress)
         cv = self.get_cv()
         self.ez = self.get_ez()
 
