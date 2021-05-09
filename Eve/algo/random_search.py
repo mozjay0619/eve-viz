@@ -39,7 +39,7 @@ class RandomSearch():
     def __init__(self, cv_method=None, data=None, feature_names=None, target_name=None, orderby=None, groupby=None, 
                  n_splits=None, min_train_size=None, train_size=None, valid_size=None, step_size=None, 
                  random_state=None, n_procs=None, n_iters=None, search_space=None,
-                 eval_user_method=None, dirpath=None):
+                 eval_user_method=None, dirpath=None, silence=False):
         
         self.cv_method = cv_method
         self.data = data
@@ -58,6 +58,7 @@ class RandomSearch():
         self.search_space = search_space
         self.eval_user_method = eval_user_method
         self.dirpath = dirpath
+        self.silence = silence
 
         if self.orderby:
             self.data[EVE_ORDERBY_ENCODED_NAME] = self.data[self.orderby].astype(int)
@@ -65,7 +66,9 @@ class RandomSearch():
         if self.n_procs is None:
             self.n_procs = int(multiprocessing.cpu_count()/2)
 
-        self.tell_required_arguments()
+        if not self.silence:
+            self.tell_required_arguments()
+
         self.use_default_args()
 
     def use_default_args(self):
@@ -73,12 +76,16 @@ class RandomSearch():
         if isinstance(self.search_space, str) and self.search_space in default_search_space_dict:
             arg, str_arg = default_search_space_dict[self.search_space]
             self.search_space = arg
-            print('\nDefault [ search_space ] argument used: \n{}'.format(str_arg))
+
+            if not self.silence:
+                print('\nDefault [ search_space ] argument used: \n{}'.format(str_arg))
             
         if isinstance(self.eval_user_method, str) and self.eval_user_method in default_eval_method_dict:
             arg, str_arg = default_eval_method_dict[self.eval_user_method]
             self.eval_user_method = arg
-            print('\nDefault [ eval_user_method ] argument used: \n{}'.format(str_arg))
+
+            if not self.silence:
+                print('\nDefault [ eval_user_method ] argument used: \n{}'.format(str_arg))
 
     def missing_required_arguments(self, required_args):
         
