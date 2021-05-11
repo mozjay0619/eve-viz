@@ -6,4 +6,4 @@ hierarchical-memmap-format
 ezFutures
 scikit-learn
 xgboost
-
+lightgbm
