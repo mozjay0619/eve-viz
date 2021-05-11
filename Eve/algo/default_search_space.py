@@ -73,6 +73,44 @@ sklearn_random_forest_regressor_search_space_str = \
 default_search_space_dict['sklearn_random_forest_regressor'] = [sklearn_random_forest_regressor_search_space, sklearn_random_forest_regressor_search_space_str]
 
 
+lightgbm_regressor_eval_method_search_space = {'num_boost_round': [(10, 950), 'discrete'],
+								               'num_leaves': [(10, 150), 'discrete'],
+								               'lambda_l1': [(1e-8, 10), 'real', 'loguniform'],
+								               'lambda_l2': [(1e-8, 10), 'real', 'loguniform'],
+								               'bagging_freq': [(2, 9), 'discrete'],
+								               'bagging_fraction': [(0.4, 1.0), 'real', 'uniform'],
+								               'min_data_in_leaf': [(15, 100), 'discrete'],
+								               'learning_rate': [(0.05, 0.25), 'real', 'loguniform']}
+
+lightgbm_regressor_eval_method_search_space_str = \
+"""
+{'num_boost_round': [(10, 950), 'discrete'],
+'num_leaves': [(10, 150), 'discrete'],
+'lambda_l1': [(1e-8, 10), 'real', 'loguniform'],
+'lambda_l2': [(1e-8, 10), 'real', 'loguniform'],
+'bagging_freq': [(2, 9), 'discrete'],
+'bagging_fraction': [(0.4, 1.0), 'real', 'uniform'],
+'min_data_in_leaf': [(15, 100), 'discrete'],
+'learning_rate': [(0.05, 0.25), 'real', 'loguniform']}"""
+
+default_search_space_dict['lightgbm_regressor_eval_method'] = [lightgbm_regressor_eval_method_search_space, lightgbm_regressor_eval_method_search_space_str]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

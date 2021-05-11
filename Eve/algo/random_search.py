@@ -442,7 +442,7 @@ class RandomSearch():
                     return RandomSearch.fetch_fold_data(
                         cv, f, search_idx, fold_idx, parameters, self.cv_method, group_name)
         
-    def run(self, debug_mode=False, show_progress=True):
+    def run(self, debug_mode=False, show_progress=True, verbose=False):
         
         f, dirpath = self.get_f(self.dirpath, show_progress)
         cv = self.get_cv()
@@ -516,6 +516,17 @@ class RandomSearch():
             self.best_params = best_params
             self.final_result_pdf = final_result_pdf
 
+            if verbose:
+
+                summary = result_pdf.groupby('group_name')['score'].min().reset_index(level=0)\
+                .sort_values('group_name').reset_index(drop=True)
+
+                try:
+                    from IPython.display import display
+                    display(summary)
+                except:
+                    print(summary)
+
             return best_params, final_result_pdf
     
         else:
@@ -524,6 +535,17 @@ class RandomSearch():
 
             self.best_params = best_params
             self.final_result_pdf = final_result_pdf
+
+            if verbose:
+
+                summary = result_pdf.groupby('group_name')['score'].min().reset_index(level=0)\
+                .sort_values('group_name').reset_index(drop=True)
+
+                try:
+                    from IPython.display import display
+                    display(summary)
+                except:
+                    print(summary)
             
             return best_params, final_result_pdf[['search_idx', 'score', 'parameters']]
 
