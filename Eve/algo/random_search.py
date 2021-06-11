@@ -443,7 +443,12 @@ class RandomSearch():
                         cv, f, search_idx, fold_idx, parameters, self.cv_method, group_name)
         
     def run(self, debug_mode=False, show_progress=True, verbose=False):
-        
+
+    	start_method = multiprocessing.get_start_method()
+    	if start_method != 'forkserver':
+    		multiprocessing.set_start_method('forkserver', force=True)
+    		print('Setting multiprocessing start method to "forkserver"')
+
         f, dirpath = self.get_f(self.dirpath, show_progress)
         cv = self.get_cv()
         self.ez = self.get_ez()
